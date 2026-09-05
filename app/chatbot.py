@@ -5,6 +5,8 @@ from app.attack_graph import bfs_attack_path, dfs_attack_path
 from app.astar import astar_defense_path
 from app.password_checker import check_password
 from app.quiz import get_random_quiz, evaluate_quiz
+from app.database import get_threat_stats, get_recent_analyses
+
 
 
 def chatbot_response(message):
@@ -170,7 +172,22 @@ def chatbot_response(message):
         }
 
     # ---------------------------------------------------------
-    # 8. DEEP SCAM & PHISHING ANALYSIS (DEFAULT CORE ENGINE)
+    # 8. SQL DATABASE TELEMETRY & STATS
+    # ---------------------------------------------------------
+    if any(k in text for k in ["database", "db stats", "telemetry", "how many scans", "threat statistics", "sql stats", "scan history"]):
+        stats = get_threat_stats()
+        recent = get_recent_analyses(5)
+        return {
+            "type": "db_stats",
+            "title": "📊 SQL Database Threat Telemetry",
+            "data": {
+                "stats": stats,
+                "recent": recent
+            }
+        }
+
+    # ---------------------------------------------------------
+    # 9. DEEP SCAM & PHISHING ANALYSIS (DEFAULT CORE ENGINE)
     # ---------------------------------------------------------
     scam_result = detect_scam(original_message)
     return {

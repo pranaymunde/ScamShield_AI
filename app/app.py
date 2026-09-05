@@ -3,70 +3,32 @@ from app.scam_detector import detect_scam
 from app.cybersecurity import get_topic
 from app.chatbot import chatbot_response
 from app.quiz import get_random_quiz, evaluate_quiz
-
-from pathlib import Path
-from datetime import datetime
-import csv
-
+from app.database import (
+    init_db,
+    save_analysis,
+    save_quiz_attempt,
+    get_recent_analyses,
+    get_threat_stats
+)
 
 app = Flask(__name__)
 
-
-# =========================================================
-# PROJECT PATHS
-# =========================================================
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-HISTORY_FILE = BASE_DIR / "data" / "analysis_history.csv"
+# Initialize SQL Database on Startup
+init_db()
 
 
 # =========================================================
-# SAVE ANALYSIS FOR POWER BI / ANALYTICS
-# =========================================================
-
-def save_analysis(message, result):
-    """
-    Save scam analysis results into a CSV file for Power BI dashboard.
-    """
-    try:
-        HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-        file_exists = HISTORY_FILE.exists()
-
-        with open(HISTORY_FILE, "a", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-
-            if not file_exists:
-                writer.writerow([
-                    "Date",
-                    "Message",
-                    "Category",
-                    "Risk",
-                    "Risk Score",
-                    "Confidence",
-                    "Suspicious Words"
-                ])
-
-            writer.writerow([
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                message,
-                result.get("category", "Unknown"),
-                result.get("risk", "LOW"),
-                result.get("risk_score", 0),
-                result.get("confidence", 0.0),
-                ", ".join(result.get("suspicious_words", []))
-            ])
-    except Exception as e:
-        print(f"[Warning] Could not save analysis history: {e}")
-
-
-# =========================================================
-# ROUTES
+# WEB PAGES
 # =========================================================
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
+# =========================================================
+# CORE API ENDPOINTS
+# =========================================================
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -77,7 +39,8 @@ def analyze():
         return jsonify({"error": "Please enter a message to analyze."}), 400
 
     result = detect_scam(message)
-    save_analysis(message, result)
+    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    save_analysis(message, result, client_ip=client_ip)
     return jsonify(result)
 
 
@@ -110,9 +73,12 @@ def quiz():
         result = evaluate_quiz(quiz_id, option)
         if not result:
             return jsonify({"error": "Invalid quiz submission."}), 400
+
+        # Record quiz attempt in SQL database
+        save_quiz_attempt(quiz_id, option, result["is_correct"])
         return jsonify(result)
 
-    # GET random quiz
+    # GET returns random quiz challenge
     return jsonify(get_random_quiz())
 
 
@@ -126,12 +92,32 @@ def chat():
 
     result = chatbot_response(message)
 
-    # Save to history only if it's a scam analysis
+    # Save to SQL database if it's a scam analysis
     if result.get("type") == "scam_analysis":
         scam_result = result.get("data", {})
-        save_analysis(message, scam_result)
+        client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+        save_analysis(message, scam_result, client_ip=client_ip)
 
     return jsonify(result)
+
+
+# =========================================================
+# SQL DATABASE TELEMETRY & HISTORY APIS
+# =========================================================
+
+@app.route("/api/stats", methods=["GET"])
+def api_stats():
+    """Returns real-time SQL threat statistics and telemetry."""
+    stats = get_threat_stats()
+    return jsonify(stats)
+
+
+@app.route("/api/history", methods=["GET"])
+def api_history():
+    """Returns recent analysis events from SQL database."""
+    limit = request.args.get("limit", 15, type=int)
+    history = get_recent_analyses(limit=limit)
+    return jsonify({"history": history})
 
 
 if __name__ == "__main__":

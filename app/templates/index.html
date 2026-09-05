@@ -66,6 +66,11 @@
                 <span class="nav-label">Emergency Helplines</span>
                 <span class="nav-badge alert">1930</span>
             </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="triggerQuickAction('sql_stats')">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">SQL Threat Database</span>
+                <span class="nav-badge">SQL</span>
+            </a>
         </nav>
 
         <div class="nav-section-title">THREAT KNOWLEDGE</div>
@@ -79,22 +84,28 @@
         </div>
 
         <!-- Telemetry Widget -->
-        <div class="telemetry-card">
+        <div class="telemetry-card" onclick="fetchAndDisplayDbStats()" style="cursor:pointer;" title="Click to inspect real-time SQL database analytics">
             <div class="telemetry-head">
                 <div class="radar-dot"></div>
-                <span>SYSTEM TELEMETRY</span>
+                <span>LIVE SQL TELEMETRY</span>
+                <span style="margin-left:auto;font-size:9px;color:var(--cyan);letter-spacing:0.5px;">VIEW</span>
             </div>
             <div class="telemetry-grid">
                 <div class="tele-item">
-                    <span class="tele-label">CLASSIFIER</span>
-                    <span class="tele-val">TF-IDF + LR</span>
+                    <span class="tele-label">SCANS IN SQL DB</span>
+                    <span class="tele-val text-green" id="teleTotalScans">--</span>
                 </div>
                 <div class="tele-item">
-                    <span class="tele-label">SECURITY STATUS</span>
-                    <span class="tele-val text-green">ARMED & SECURE</span>
+                    <span class="tele-label">HIGH RISK BLOCKED</span>
+                    <span class="tele-val" style="color:var(--rose);" id="teleHighThreats">--</span>
+                </div>
+                <div class="tele-item">
+                    <span class="tele-label">AVG RISK INDEX</span>
+                    <span class="tele-val text-cyan" id="teleAvgScore">--</span>
                 </div>
             </div>
         </div>
+
     </aside>
 
     <!-- ================= MAIN APP CANVAS ================= -->
@@ -259,6 +270,9 @@
                 </button>
                 <button class="chip-btn" onclick="injectPrompt('What are the official cybercrime helpline numbers?')">
                     <span>🚨</span> 1930 Helpline
+                </button>
+                <button class="chip-btn" onclick="injectPrompt('Show live SQL database threat statistics')">
+                    <span>📊</span> SQL Threat DB
                 </button>
                 <button class="chip-btn" onclick="injectPrompt('How does UPI fraud work and how to prevent it?')">
                     <span>💳</span> UPI Fraud Guide

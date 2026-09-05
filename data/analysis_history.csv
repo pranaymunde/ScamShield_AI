@@ -1,2 +1,4 @@
 Date,Message,Category,Risk,Confidence,Suspicious Words
 2026-09-04 21:06:41,Congratulations! You won ₹10 lakh. Pay ₹500 to claim.,Prize Scam,MEDIUM,47.34,"pay, won"
+2026-09-05 21:06:28,Urgent bank account blocked,Banking Scam,HIGH,95,88.5,"urgent, blocked"
+2026-09-05 21:08:19,Urgent OTP required to unlock account,Banking Scam,HIGH,36,18.25,"urgent, otp"

@@ -185,7 +185,29 @@ function triggerQuickAction(action) {
         injectPrompt("Simulate phishing attack progression with BFS");
     } else if (action === "helpline") {
         injectPrompt("What are the official cybercrime helpline numbers?");
+    } else if (action === "sql_stats") {
+        injectPrompt("Show live SQL database threat statistics");
     }
+}
+
+async function fetchTelemetry() {
+    try {
+        const res = await fetch("/api/stats");
+        const data = await res.json();
+        const scansEl = document.getElementById("teleTotalScans");
+        const highEl = document.getElementById("teleHighThreats");
+        const avgEl = document.getElementById("teleAvgScore");
+        if (scansEl) scansEl.textContent = data.total_scans;
+        if (highEl) highEl.textContent = data.high_threats;
+        if (avgEl) avgEl.textContent = data.avg_risk_score + "/100";
+    } catch (e) {
+        console.warn("Could not sync SQL telemetry:", e);
+    }
+}
+
+function fetchAndDisplayDbStats() {
+    audioEngine.play("click");
+    injectPrompt("Show live SQL database threat statistics");
 }
 
 function useCyberTopic(topic) {
@@ -272,6 +294,7 @@ function handleResponsePayload(result) {
         if (data.risk === "HIGH") audioEngine.play("alert");
         else audioEngine.play("success");
         renderScamResult(data);
+        fetchTelemetry();
     } 
     else if (type === "password_strength") {
         audioEngine.play("success");
@@ -289,6 +312,7 @@ function handleResponsePayload(result) {
         if (data.is_correct) audioEngine.play("success");
         else audioEngine.play("alert");
         renderQuizEvaluation(data);
+        fetchTelemetry();
     } 
     else if (type === "cybersecurity") {
         audioEngine.play("success");
@@ -298,6 +322,11 @@ function handleResponsePayload(result) {
         audioEngine.play("alert");
         renderHelplineResult(data);
     } 
+    else if (type === "db_stats") {
+        audioEngine.play("success");
+        renderDbStatsCard(data);
+        fetchTelemetry();
+    }
     else if (type === "bot_intro") {
         audioEngine.play("success");
         renderBotIntro(data);
@@ -1062,6 +1091,121 @@ function renderBotIntro(data) {
 
 
 // =========================================================
+// 6. RENDER SQL DATABASE THREAT TELEMETRY
+// =========================================================
+
+function renderDbStatsCard(data) {
+    const chat = document.getElementById("chat");
+    const row = document.createElement("div");
+    row.className = "message-row";
+
+    const s = data.stats || {};
+    const recent = data.recent || [];
+
+    const recentRows = recent.map((r) => `
+        <tr style="border-bottom: 1px solid var(--border-subtle); font-size:12px;">
+            <td style="padding:10px 8px; font-family:var(--font-mono); color:var(--text-muted); font-size:11px; white-space:nowrap;">
+                ${escapeHTML(r.created_at ? r.created_at.substring(5, 16) : '')}
+            </td>
+            <td style="padding:10px 8px; font-weight:700; color:var(--cyan); white-space:nowrap;">
+                ${escapeHTML(r.category || 'Unknown')}
+            </td>
+            <td style="padding:10px 8px; white-space:nowrap;">
+                <span class="risk-pill ${(r.risk || 'low').toLowerCase()}" style="padding:2px 8px; font-size:9px;">
+                    ${escapeHTML(r.risk || 'LOW')}
+                </span>
+            </td>
+            <td style="padding:10px 8px; font-family:var(--font-mono); font-weight:800; color:var(--text-primary); text-align:center;">
+                ${r.risk_score || 0}
+            </td>
+            <td style="padding:10px 8px; color:var(--text-secondary); max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                ${escapeHTML(r.message || '')}
+            </td>
+        </tr>
+    `).join("");
+
+    row.innerHTML = `
+        <div class="message-wrapper">
+            <div class="message-avatar ai">📊</div>
+            <div class="message-content">
+                <div class="message-sender">SQL THREAT TELEMETRY ENGINE</div>
+                <div class="card-scam">
+                    <div class="card-top">
+                        <div class="card-heading">
+                            <div class="card-badge-icon">🗄️</div>
+                            <div>
+                                <h4>SQLite Security Database</h4>
+                                <span>Real-Time Relational Threat Store & Aggregation</span>
+                            </div>
+                        </div>
+                        <div class="nav-badge" style="padding:6px 12px; font-size:11px;">SQL ARMED</div>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Stats Grid -->
+                        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:20px;">
+                            <div class="stat-tile">
+                                <div class="stat-tile-label">Total Scans</div>
+                                <div class="stat-tile-val text-cyan">${s.total_scans || 0}</div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-tile-label">High Risk Blocked</div>
+                                <div class="stat-tile-val" style="color:var(--rose);">${s.high_threats || 0}</div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-tile-label">Average Risk</div>
+                                <div class="stat-tile-val">${s.avg_risk_score || 0}/100</div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-tile-label">Top Threat Type</div>
+                                <div class="stat-tile-val" style="color:var(--amber); font-size:13px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">
+                                    ${escapeHTML(s.top_threat_category || 'None')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent SQL Log Table -->
+                        <div class="section-block" style="border-top:none; padding-top:0;">
+                            <div class="section-block-title">
+                                <span>📜</span> RECENT VERIFIED SCANS (STORED IN SQL)
+                            </div>
+                            ${recent.length > 0 ? `
+                                <div style="overflow-x:auto; border-radius:12px; border:1px solid var(--border-subtle); background:rgba(0,0,0,0.15);">
+                                    <table style="width:100%; border-collapse:collapse; text-align:left;">
+                                        <thead>
+                                            <tr style="border-bottom:1px solid var(--border-subtle); font-size:10px; font-family:var(--font-mono); color:var(--text-muted); text-transform:uppercase;">
+                                                <th style="padding:8px;">Date</th>
+                                                <th style="padding:8px;">Category</th>
+                                                <th style="padding:8px;">Risk</th>
+                                                <th style="padding:8px; text-align:center;">Score</th>
+                                                <th style="padding:8px;">Sample Text</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${recentRows}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ` : `<p style="font-size:12px; color:var(--text-muted);">No scan logs recorded yet. Analyze a sample message above to generate SQL records!</p>`}
+                        </div>
+
+                        <div class="card-action-bar">
+                            <button class="card-btn" onclick="fetchTelemetry(); injectPrompt('Show live SQL database threat statistics');">
+                                <span>🔄</span> Refresh Database Telemetry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    chat.appendChild(row);
+    scrollBottom();
+}
+
+
+// =========================================================
 // UTILITIES
 // =========================================================
 
@@ -1075,4 +1219,6 @@ function escapeHTML(str) {
 // Initialize on DOM Ready
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
+    fetchTelemetry();
 });
+
