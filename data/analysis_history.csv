@@ -2,3 +2,17 @@ Date,Message,Category,Risk,Confidence,Suspicious Words
 2026-09-04 21:06:41,Congratulations! You won ₹10 lakh. Pay ₹500 to claim.,Prize Scam,MEDIUM,47.34,"pay, won"
 2026-09-05 21:06:28,Urgent bank account blocked,Banking Scam,HIGH,95,88.5,"urgent, blocked"
 2026-09-05 21:08:19,Urgent OTP required to unlock account,Banking Scam,HIGH,36,18.25,"urgent, otp"
+2026-09-06 09:04:53,"Dear user, electricity power will be disconnected at 9:30 PM due to unpaid bill. Immediately contact officer at 98214XXXXX.",Normal,MEDIUM,20,24.55,immediately
+2026-09-06 09:13:35,Your bank account is blocked. Send OTP immediately.,Banking Scam,HIGH,56,62.05,"immediately, otp"
+2026-09-06 09:34:57,URGENT! Your bank account is blocked. Verify your OTP immediately by clicking this link and pay ₹500 to reactivate your account.,Banking Scam,HIGH,60,43.88,"urgent, immediately, otp"
+2026-09-06 09:41:43,URGENT! Your bank account is blocked. Verify your OTP immediately.,Banking Scam,HIGH,68,62.02,"urgent, immediately, otp"
+2026-09-06 09:42:11,Congratulations! You won a prize. Click this link to claim your reward.,Prize Scam,HIGH,70,54.64,"won, prize, claim your, congratulations, click this link"
+2026-09-06 09:53:37,"Good morning, how are you?",Prize Scam,LOW,16,35.21,
+2026-09-06 09:55:09,"Data	is	one	of	the	most	valuable	resources	in	the	modern	world.	Every	organization,	whether	it	is	a	college,	
+hospital,	bank,	government	office,	or	online	shopping	platform,	generates	and	stores	large	amounts	of	data	every	
+day.	This	data	may	contain	information	about	students,	patients,	customers,	employees,	products,	transactions,	and	
+many	other	entities.	
+Consider	a	college.	During	an	academic	year,	the	college	stores	information	such	as	student	admission	details,	
+attendance	records,	examination	marks,	fee	payments,	faculty	information,	and	course	details.	Similarly,	a	bank	
+stores	customer	account	information,	transaction	histories,	loan	records,	and	ATM	operations.	Managing	such	huge	
+volumes	of	data	manually	is	extremely	difficult	and	error-prone.",Normal,LOW,8,22.22,

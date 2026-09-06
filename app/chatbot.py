@@ -132,6 +132,99 @@ def chatbot_response(message):
         }
 
     # ---------------------------------------------------------
+    # 6a. EMAIL HEADER ANALYZER
+    # ---------------------------------------------------------
+    email_triggers = ["email header", "analyze email", "check email header", "inspect email", "spf", "dkim", "dmarc", "received from"]
+    if any(k in text for k in email_triggers):
+        return {
+            "type": "email_header_guide",
+            "title": "📧 Email Header Forensics Guide",
+            "data": {
+                "description": "Email headers are hidden metadata attached to every email that reveal the true origin and routing of a message. Analyzing them exposes spoofed senders and phishing infrastructure.",
+                "fields": [
+                    {
+                        "field": "Return-Path",
+                        "icon": "📬",
+                        "risk": "HIGH",
+                        "explanation": "The actual reply address. If different from the 'From' address, the email is likely spoofed.",
+                        "what_to_look": "Mismatch between From: and Return-Path: domains is a critical red flag."
+                    },
+                    {
+                        "field": "Received: from",
+                        "icon": "🌐",
+                        "risk": "HIGH",
+                        "explanation": "Shows the chain of mail servers the email passed through. Read from bottom to top — the bottom entry is the true origin.",
+                        "what_to_look": "IP addresses in private ranges (192.168.x.x, 10.x.x.x) or known malicious hosting countries."
+                    },
+                    {
+                        "field": "Authentication-Results (SPF)",
+                        "icon": "🛡️",
+                        "risk": "MEDIUM",
+                        "explanation": "Sender Policy Framework verifies the sending server is authorized to send email on behalf of the domain.",
+                        "what_to_look": "Look for 'spf=fail' or 'spf=softfail' — these indicate the email domain does NOT authorize the sending server."
+                    },
+                    {
+                        "field": "DKIM-Signature",
+                        "icon": "🔐",
+                        "risk": "MEDIUM",
+                        "explanation": "DomainKeys Identified Mail is a cryptographic signature proving the email content was not altered in transit.",
+                        "what_to_look": "A missing or failing DKIM signature means the message may have been tampered with or is fraudulent."
+                    },
+                    {
+                        "field": "X-Mailer / User-Agent",
+                        "icon": "⚙️",
+                        "risk": "LOW",
+                        "explanation": "Reveals the email client or server software used. Spammers often use bulk mailers (Sendgrid, Mailchimp misuse, phpmailer scripts).",
+                        "what_to_look": "Generic script-based mailers (PHPMailer, Python smtplib) sending 'official bank notices' are suspicious."
+                    },
+                    {
+                        "field": "Message-ID",
+                        "icon": "🆔",
+                        "risk": "LOW",
+                        "explanation": "A unique identifier for the message. Legitimate emails have Message-IDs matching their sending domain.",
+                        "what_to_look": "Message-ID with random gibberish domains (e.g. <abc@fkjd23.ru>) on a supposed Google or HDFC email."
+                    }
+                ],
+                "how_to_access": [
+                    "Gmail: Open email → 3-dot menu → Show Original",
+                    "Outlook: File → Properties → Internet Headers",
+                    "Yahoo Mail: More → View Raw Message",
+                    "Paste raw headers into: mxtoolbox.com/EmailHeaders.aspx"
+                ]
+            }
+        }
+
+    # ---------------------------------------------------------
+    # 6b. URL / DOMAIN DEEP SCANNER
+    # ---------------------------------------------------------
+    url_scan_triggers = ["scan url", "check url", "analyze url", "is this url safe", "scan domain", "check domain", "url scanner", "domain scanner"]
+    url_in_message = re.search(r'https?://[\S]+', original_message, re.IGNORECASE)
+    if any(k in text for k in url_scan_triggers) or (url_in_message and len(text.split()) <= 5):
+        if url_in_message:
+            url = url_in_message.group(0)
+            from app.rules import analyze_urls
+            url_result = analyze_urls(original_message)
+            indicators = url_result.get('suspicious_indicators', [])
+            urls = url_result.get('urls', [])
+            risk = 'HIGH' if len(indicators) >= 3 else ('MEDIUM' if len(indicators) >= 1 else 'LOW')
+            return {
+                "type": "url_scan",
+                "title": "🔗 URL Deep Threat Analysis",
+                "data": {
+                    "url": url,
+                    "urls": urls,
+                    "indicators": indicators,
+                    "risk": risk,
+                    "checks": url_result,
+                    "advice": "Never visit this URL on a primary device. Use an isolated sandbox or VirusTotal (virustotal.com) for additional verification." if risk == 'HIGH' else "Exercise caution. Verify this URL against the official website of the organization."
+                }
+            }
+        return {
+            "type": "url_scan_prompt",
+            "message": "🔗 To scan a URL, paste it directly into the chat (e.g. 'http://suspicious-site.xyz/login') or type 'scan url http://example.com'. I will analyze domain structure, IP exposure, path heuristics, and suspicious indicators."
+        }
+
+    # ---------------------------------------------------------
     # 6. ATTACK GRAPH SIMULATIONS (BFS / DFS / A*)
     # ---------------------------------------------------------
     scenario = "phishing"

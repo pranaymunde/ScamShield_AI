@@ -1,309 +1,2175 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScamShield AI — Next-Gen Cyber Threat Defense & Intelligence</title>
-    <meta name="description" content="ScamShield AI is an intelligent cybersecurity assistant combining NLP, machine learning, URL heuristics, and graph algorithms to detect scams, test passwords, and simulate attack paths.">
+
+    <title>ScamShield AI — Next-Gen Cyber Threat Defense &amp; Intelligence</title>
+
+    <meta name="description"
+        content="ScamShield AI is an intelligent cybersecurity assistant combining NLP, machine learning, URL heuristics, and graph algorithms to detect scams, test passwords, and simulate attack paths.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=5.1">
 </head>
+
 <body>
-    <!-- BACKGROUND LIGHT FX -->
+
+    <!-- =========================================================
+         BACKGROUND LIGHT FX
+    ========================================================== -->
+
     <div class="cyber-mesh-bg"></div>
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
     <div class="glow-orb orb-3"></div>
 
-    <!-- ================= SIDEBAR ================= -->
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <div class="brand-logo-wrap">
-                <div class="logo-shield">🛡️</div>
-                <span class="logo-pulse"></span>
+
+    <!-- =========================================================
+         SCAM REPORT MODAL
+    ========================================================== -->
+
+    <div class="modal-overlay" id="reportModalOverlay" onclick="closeReportModal()">
+
+        <div class="modal-dialog" onclick="event.stopPropagation()">
+
+            <div class="modal-header">
+
+                <div class="modal-header-left">
+
+                    <div class="modal-icon">🚨</div>
+
+                    <div>
+                        <h3>Report a Scam Incident</h3>
+
+                        <p>
+                            Help protect others by logging this fraud to our database
+                        </p>
+                    </div>
+
+                </div>
+
+                <button class="modal-close-btn" onclick="closeReportModal()" aria-label="Close modal">
+                    ✕
+                </button>
+
             </div>
-            <div class="brand-text">
-                <h2>ScamShield<span>AI</span></h2>
-                <p>Cyber Defense Intelligence</p>
+
+
+            <div class="modal-body">
+
+                <form id="scamReportForm" onsubmit="submitScamReport(event)">
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label class="form-label" for="reportScamType">
+
+                                Scam Type
+                                <span class="required">*</span>
+
+                            </label>
+
+                            <select class="form-control" id="reportScamType" required>
+
+                                <option value="">
+                                    — Select Scam Type —
+                                </option>
+
+                                <option value="Phishing Email">
+                                    📧 Phishing Email
+                                </option>
+
+                                <option value="SMS Smishing">
+                                    📱 SMS Smishing
+                                </option>
+
+                                <option value="Vishing Call">
+                                    📞 Vishing (Phone Call)
+                                </option>
+
+                                <option value="UPI / QR Fraud">
+                                    💳 UPI / QR Code Fraud
+                                </option>
+
+                                <option value="Job Offer Scam">
+                                    💼 Fake Job / Task Scam
+                                </option>
+
+                                <option value="Investment Fraud">
+                                    📈 Investment / Ponzi Fraud
+                                </option>
+
+                                <option value="Tech Support Scam">
+                                    💻 Tech Support Scam
+                                </option>
+
+                                <option value="Romance Scam">
+                                    ❤️ Romance / Relationship Scam
+                                </option>
+
+                                <option value="Lottery Prize Scam">
+                                    🎁 Lottery / Prize Scam
+                                </option>
+
+                                <option value="Electricity Bill Scam">
+                                    ⚡ Utility / Bill Scam
+                                </option>
+
+                                <option value="Courier Parcel Scam">
+                                    📦 Courier / Parcel Scam
+                                </option>
+
+                                <option value="Deepfake AI Scam">
+                                    🤖 Deepfake / AI Voice Scam
+                                </option>
+
+                                <option value="SIM Swap Attack">
+                                    📡 SIM Swap Attack
+                                </option>
+
+                                <option value="Ransomware Attack">
+                                    🔒 Ransomware / Malware
+                                </option>
+
+                                <option value="Other">
+                                    🔍 Other / Unknown
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label" for="reportPlatform">
+
+                                Platform / Channel
+
+                            </label>
+
+                            <select class="form-control" id="reportPlatform">
+
+                                <option value="">
+                                    — Where did it happen? —
+                                </option>
+
+                                <option value="WhatsApp">
+                                    WhatsApp
+                                </option>
+
+                                <option value="SMS">
+                                    SMS / Text Message
+                                </option>
+
+                                <option value="Email">
+                                    Email
+                                </option>
+
+                                <option value="Phone Call">
+                                    Phone Call
+                                </option>
+
+                                <option value="Telegram">
+                                    Telegram
+                                </option>
+
+                                <option value="Instagram">
+                                    Instagram
+                                </option>
+
+                                <option value="Facebook">
+                                    Facebook / Marketplace
+                                </option>
+
+                                <option value="Twitter / X">
+                                    Twitter / X
+                                </option>
+
+                                <option value="OLX / Classified">
+                                    OLX / Classified Site
+                                </option>
+
+                                <option value="Dating App">
+                                    Dating App
+                                </option>
+
+                                <option value="Website Pop-up">
+                                    Website Pop-up
+                                </option>
+
+                                <option value="Banking App">
+                                    Banking App
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label class="form-label" for="reportAmount">
+
+                                Amount Lost (₹)
+
+                            </label>
+
+                            <input type="number" class="form-control" id="reportAmount"
+                                placeholder="0 if no financial loss" min="0" step="1">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label" for="reportEmail">
+
+                                Your Email (optional)
+
+                            </label>
+
+                            <input type="email" class="form-control" id="reportEmail"
+                                placeholder="For follow-up only (never shared)">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label class="form-label" for="reportDescription">
+
+                            Describe the Incident
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <textarea class="form-control" id="reportDescription" rows="4"
+                            placeholder="Paste the suspicious message, describe the call, or explain what happened in detail..."
+                            required></textarea>
+
+                    </div>
+
+
+                    <div class="form-row checkbox-row">
+
+                        <label class="checkbox-label" id="contactSharedLabel">
+
+                            <input type="checkbox" id="reportContactShared">
+
+                            <span class="checkbox-custom"></span>
+
+                            <span>
+                                I shared personal contact or financial info
+                            </span>
+
+                        </label>
+
+
+                        <label class="checkbox-label" id="reportedPoliceLabel">
+
+                            <input type="checkbox" id="reportReportedPolice">
+
+                            <span class="checkbox-custom"></span>
+
+                            <span>
+                                Already reported to police / cybercrime portal
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button type="button" class="modal-cancel-btn" onclick="closeReportModal()">
+
+                            Cancel
+
+                        </button>
+
+
+                        <button type="submit" class="modal-submit-btn" id="reportSubmitBtn">
+
+                            <span class="btn-icon">🚨</span>
+
+                            <span>
+                                Submit Scam Report
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
+
         </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-logo-wrap">
+
+                <div class="logo-shield">
+                    🛡️
+                </div>
+
+                <span class="logo-pulse"></span>
+
+            </div>
+
+
+            <div class="brand-text">
+
+                <h2>
+                    ScamShield<span>AI</span>
+                </h2>
+
+                <p>
+                    Cyber Defense Intelligence
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- NEW INVESTIGATION -->
 
         <button class="new-chat-btn" id="newChatBtn" onclick="newChat()">
-            <span class="btn-icon">⚡</span>
-            <span>New Investigation</span>
+
+            <span class="btn-icon">
+                ⚡
+            </span>
+
+            <span>
+                New Investigation
+            </span>
+
         </button>
 
-        <div class="nav-section-title">INTELLIGENCE ENGINES</div>
-        <nav class="sidebar-nav">
-            <a href="javascript:void(0)" class="nav-item active" onclick="triggerQuickAction('scan')">
-                <span class="nav-icon">🔍</span>
-                <span class="nav-label">Scam Deep Scanner</span>
-                <span class="nav-badge">ML+NLP</span>
-            </a>
-            <a href="javascript:void(0)" class="nav-item" onclick="triggerQuickAction('password')">
-                <span class="nav-icon">🔐</span>
-                <span class="nav-label">Password Entropy Lab</span>
-                <span class="nav-badge">GPU</span>
-            </a>
-            <a href="javascript:void(0)" class="nav-item" onclick="triggerQuickAction('quiz')">
-                <span class="nav-icon">🎯</span>
-                <span class="nav-label">Cyber Defense Quiz</span>
-                <span class="nav-badge hot">LIVE</span>
-            </a>
-            <a href="javascript:void(0)" class="nav-item" onclick="triggerQuickAction('graph')">
-                <span class="nav-icon">🧭</span>
-                <span class="nav-label">Attack Path Simulation</span>
-                <span class="nav-badge">BFS/A*</span>
-            </a>
-            <a href="javascript:void(0)" class="nav-item" onclick="triggerQuickAction('helpline')">
-                <span class="nav-icon">🚨</span>
-                <span class="nav-label">Emergency Helplines</span>
-                <span class="nav-badge alert">1930</span>
-            </a>
-            <a href="javascript:void(0)" class="nav-item" onclick="triggerQuickAction('sql_stats')">
-                <span class="nav-icon">📊</span>
-                <span class="nav-label">SQL Threat Database</span>
-                <span class="nav-badge">SQL</span>
-            </a>
-        </nav>
 
-        <div class="nav-section-title">THREAT KNOWLEDGE</div>
-        <div class="knowledge-chips">
-            <button class="k-chip" onclick="useCyberTopic('Phishing')">Phishing</button>
-            <button class="k-chip" onclick="useCyberTopic('UPI Fraud')">UPI Fraud</button>
-            <button class="k-chip" onclick="useCyberTopic('Ransomware')">Ransomware</button>
-            <button class="k-chip" onclick="useCyberTopic('Smishing')">Smishing</button>
-            <button class="k-chip" onclick="useCyberTopic('Deepfake Scams')">Deepfakes</button>
-            <button class="k-chip" onclick="useCyberTopic('SIM Swapping')">SIM Swap</button>
+
+        <!-- INTELLIGENCE ENGINES -->
+
+        <div class="nav-section-title">
+            INTELLIGENCE ENGINES
         </div>
 
-        <!-- Telemetry Widget -->
-        <div class="telemetry-card" onclick="fetchAndDisplayDbStats()" style="cursor:pointer;" title="Click to inspect real-time SQL database analytics">
+
+        <nav class="sidebar-nav">
+
+            <!-- SCANNER -->
+
+            <a href="javascript:void(0)" class="nav-item active" id="nav-scan"
+                onclick="setActiveNav(this); triggerQuickAction('scan')">
+
+                <span class="nav-icon">
+                    🔍
+                </span>
+
+                <span class="nav-label">
+                    Scam Deep Scanner
+                </span>
+
+                <span class="nav-badge">
+                    ML+NLP
+                </span>
+
+            </a>
+
+
+
+            <!-- URL -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-url"
+                onclick="setActiveNav(this); triggerQuickAction('url')">
+
+                <span class="nav-icon">
+                    🔗
+                </span>
+
+                <span class="nav-label">
+                    URL Domain Inspector
+                </span>
+
+                <span class="nav-badge">
+                    Heuristics
+                </span>
+
+            </a>
+
+
+
+            <!-- EMAIL -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-email"
+                onclick="setActiveNav(this); triggerQuickAction('email')">
+
+                <span class="nav-icon">
+                    📧
+                </span>
+
+                <span class="nav-label">
+                    Email Header Forensics
+                </span>
+
+                <span class="nav-badge">
+                    SPF/DKIM
+                </span>
+
+            </a>
+
+
+
+            <!-- PASSWORD -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-password"
+                onclick="setActiveNav(this); triggerQuickAction('password')">
+
+                <span class="nav-icon">
+                    🔐
+                </span>
+
+                <span class="nav-label">
+                    Password Entropy Lab
+                </span>
+
+                <span class="nav-badge">
+                    GPU
+                </span>
+
+            </a>
+
+
+
+            <!-- QUIZ -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-quiz"
+                onclick="setActiveNav(this); triggerQuickAction('quiz')">
+
+                <span class="nav-icon">
+                    🎯
+                </span>
+
+                <span class="nav-label">
+                    Cyber Defense Quiz
+                </span>
+
+                <span class="nav-badge hot">
+                    10 Cases
+                </span>
+
+            </a>
+
+
+
+            <!-- GRAPH -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-graph"
+                onclick="setActiveNav(this); triggerQuickAction('graph')">
+
+                <span class="nav-icon">
+                    🧭
+                </span>
+
+                <span class="nav-label">
+                    Attack Path Simulation
+                </span>
+
+                <span class="nav-badge">
+                    BFS/A*
+                </span>
+
+            </a>
+
+
+
+            <!-- HELPLINE -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-helpline"
+                onclick="setActiveNav(this); triggerQuickAction('helpline')">
+
+                <span class="nav-icon">
+                    🚨
+                </span>
+
+                <span class="nav-label">
+                    Emergency Helplines
+                </span>
+
+                <span class="nav-badge alert">
+                    1930
+                </span>
+
+            </a>
+
+
+
+            <!-- SQL DATABASE -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-sql"
+                onclick="setActiveNav(this); triggerQuickAction('sql_stats')">
+
+                <span class="nav-icon">
+                    📊
+                </span>
+
+                <span class="nav-label">
+                    SQL Threat Database
+                </span>
+
+                <span class="nav-badge">
+                    SQL
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 NEW: INVESTIGATION HISTORY
+            ================================================== -->
+
+            <a href="javascript:void(0)" class="nav-item" id="nav-history"
+                onclick="setActiveNav(this); loadInvestigationHistory()">
+
+                <span class="nav-icon">
+                    🕘
+                </span>
+
+                <span class="nav-label">
+                    Investigation History
+                </span>
+
+                <span class="nav-badge">
+                    SQL
+                </span>
+
+            </a>
+
+
+
+            <!-- REPORT -->
+
+            <a href="javascript:void(0)" class="nav-item nav-item-report" id="nav-report" onclick="openReportModal()">
+
+                <span class="nav-icon">
+                    📝
+                </span>
+
+                <span class="nav-label">
+                    Report a Scam
+                </span>
+
+                <span class="nav-badge" style="background:rgba(244,63,94,0.15);
+                             color:var(--rose);
+                             border-color:rgba(244,63,94,0.3);">
+
+                    NEW
+
+                </span>
+
+            </a>
+
+        </nav>
+
+
+
+        <!-- =========================================================
+             THREAT KNOWLEDGE
+        ========================================================== -->
+
+        <div class="nav-section-title">
+            THREAT KNOWLEDGE
+        </div>
+
+
+        <div class="knowledge-chips">
+
+            <button class="k-chip" onclick="useCyberTopic('Phishing')">
+                Phishing
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('UPI Fraud')">
+                UPI Fraud
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('Ransomware')">
+                Ransomware
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('Smishing')">
+                Smishing
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('Deepfake Scams')">
+                Deepfakes
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('SIM Swapping')">
+                SIM Swap
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('Vishing')">
+                Vishing
+            </button>
+
+            <button class="k-chip" onclick="useCyberTopic('Social Engineering')">
+                Social Eng.
+            </button>
+
+        </div>
+
+
+
+        <!-- SECURITY TIP -->
+
+        <div class="tip-card" id="securityTipCard">
+
+            <div class="tip-header">
+
+                <span class="tip-bulb">
+                    💡
+                </span>
+
+                <span>
+                    SECURITY TIP
+                </span>
+
+                <button class="tip-refresh-btn" onclick="rotateTip()" title="Next tip">
+
+                    ↻
+
+                </button>
+
+            </div>
+
+            <p class="tip-text" id="tipText">
+
+                Loading tip...
+
+            </p>
+
+        </div>
+
+
+
+        <!-- TELEMETRY -->
+
+        <div class="telemetry-card" onclick="fetchAndDisplayDbStats()" style="cursor:pointer;"
+            title="Click to inspect real-time SQL database analytics">
+
             <div class="telemetry-head">
+
                 <div class="radar-dot"></div>
-                <span>LIVE SQL TELEMETRY</span>
-                <span style="margin-left:auto;font-size:9px;color:var(--cyan);letter-spacing:0.5px;">VIEW</span>
+
+                <span>
+                    LIVE SQL TELEMETRY
+                </span>
+
+                <span style="margin-left:auto;
+                             font-size:9px;
+                             color:var(--cyan);
+                             letter-spacing:0.5px;">
+
+                    VIEW
+
+                </span>
+
             </div>
+
+
             <div class="telemetry-grid">
+
                 <div class="tele-item">
-                    <span class="tele-label">SCANS IN SQL DB</span>
-                    <span class="tele-val text-green" id="teleTotalScans">--</span>
+
+                    <span class="tele-label">
+                        SCANS IN SQL DB
+                    </span>
+
+                    <span class="tele-val text-green" id="teleTotalScans">
+                        --
+                    </span>
+
                 </div>
+
+
                 <div class="tele-item">
-                    <span class="tele-label">HIGH RISK BLOCKED</span>
-                    <span class="tele-val" style="color:var(--rose);" id="teleHighThreats">--</span>
+
+                    <span class="tele-label">
+                        HIGH RISK BLOCKED
+                    </span>
+
+                    <span class="tele-val" style="color:var(--rose);" id="teleHighThreats">
+                        --
+                    </span>
+
                 </div>
+
+
                 <div class="tele-item">
-                    <span class="tele-label">AVG RISK INDEX</span>
-                    <span class="tele-val text-cyan" id="teleAvgScore">--</span>
+
+                    <span class="tele-label">
+                        AVG RISK INDEX
+                    </span>
+
+                    <span class="tele-val text-cyan" id="teleAvgScore">
+                        --
+                    </span>
+
                 </div>
+
+
+                <div class="tele-item">
+
+                    <span class="tele-label">
+                        COMMUNITY REPORTS
+                    </span>
+
+                    <span class="tele-val" style="color:var(--amber);" id="teleCommunityReports">
+                        --
+                    </span>
+
+                </div>
+
             </div>
+
         </div>
 
     </aside>
 
-    <!-- ================= MAIN APP CANVAS ================= -->
+
+
+    <!-- =========================================================
+         MAIN APP CANVAS
+    ========================================================== -->
+
     <main class="main-canvas">
-        <!-- TOP NAVIGATION BAR -->
+
+
+        <!-- =====================================================
+             TOP BAR
+        ====================================================== -->
+
         <header class="topbar">
+
             <div class="topbar-left">
-                <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+
+                <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()"
+                    aria-label="Toggle Sidebar">
+
                     ☰
+
                 </button>
+
+
                 <div class="topbar-status-chip">
+
                     <span class="radar-beacon">
+
                         <span class="beacon-core"></span>
+
                         <span class="beacon-ring"></span>
+
                     </span>
-                    <span class="status-text">SHIELD PROTOCOL V4.0 ACTIVE</span>
+
+
+                    <span class="status-text">
+                        SHIELD PROTOCOL V5.0 ACTIVE
+                    </span>
+
                 </div>
+
             </div>
+
+
+
+            <!-- SESSION STATS -->
+
+            <div class="session-stats-bar" id="sessionStatsBar">
+
+                <div class="session-stat-item">
+
+                    <span class="session-stat-label">
+                        This Session
+                    </span>
+
+                    <span class="session-stat-val" id="sessionScansCount">
+                        0
+                    </span>
+
+                </div>
+
+
+                <div class="session-stat-divider"></div>
+
+
+                <div class="session-stat-item">
+
+                    <span class="session-stat-label">
+                        Threats Found
+                    </span>
+
+                    <span class="session-stat-val" id="sessionThreatsCount" style="color:var(--rose);">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+                <div class="session-stat-divider"></div>
+
+
+                <div class="session-stat-item">
+
+                    <span class="session-stat-label">
+                        Quiz Score
+                    </span>
+
+                    <span class="session-stat-val" id="sessionQuizScore" style="color:var(--amber);">
+
+                        --
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOP ACTIONS -->
 
             <div class="topbar-actions">
-                <!-- Sound Effects Toggle -->
+
                 <button class="action-btn" id="soundToggleBtn" onclick="toggleSound()" title="Toggle Sound FX">
-                    <span id="soundIcon">🔊</span>
-                    <span class="btn-text">Audio</span>
+
+                    <span id="soundIcon">
+                        🔊
+                    </span>
+
+                    <span class="btn-text">
+                        Audio
+                    </span>
+
                 </button>
 
-                <!-- Theme Switcher -->
-                <button class="action-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch Theme">
-                    <span id="themeIcon">☀️</span>
-                    <span class="btn-text" id="themeText">Light</span>
+
+                <button class="action-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()"
+                    title="Switch Theme">
+
+                    <span id="themeIcon">
+                        ☀️
+                    </span>
+
+                    <span class="btn-text" id="themeText">
+
+                        Light
+
+                    </span>
+
                 </button>
 
-                <!-- Clear Session -->
+
+                <button class="action-btn report-btn" onclick="openReportModal()" title="Report a Scam">
+
+                    <span>
+                        📝
+                    </span>
+
+                    <span class="btn-text">
+                        Report
+                    </span>
+
+                </button>
+
+
                 <button class="action-btn" onclick="clearConversation()" title="Clear Chat">
-                    <span>🗑️</span>
-                    <span class="btn-text">Clear</span>
+
+                    <span>
+                        🗑️
+                    </span>
+
+                    <span class="btn-text">
+                        Clear
+                    </span>
+
                 </button>
+
             </div>
+
         </header>
 
-        <!-- CHAT CONVERSATION CONTAINER -->
+
+
+        <!-- =====================================================
+             CHAT CONTAINER
+        ====================================================== -->
+
         <section class="chat-container" id="chat" role="log" aria-live="polite">
-            <!-- WELCOME SCREEN -->
+
+
+            <!-- =================================================
+                 WELCOME SCREEN
+            ================================================== -->
+
             <div class="welcome-view" id="welcome">
+
+
                 <div class="hero-emblem-wrap">
-                    <div class="hero-emblem">🛡️</div>
+
+                    <div class="hero-emblem">
+                        🛡️
+                    </div>
+
                     <div class="hero-radar-glow"></div>
+
                 </div>
 
-                <div class="hero-badge">AI-POWERED CYBER DEFENSE TERMINAL</div>
-                <h1 class="hero-title">Neutralize Threats Before They Strike.</h1>
+
+                <div class="hero-badge">
+                    AI-POWERED CYBER DEFENSE TERMINAL v5.0
+                </div>
+
+
+                <h1 class="hero-title">
+                    Neutralize Threats Before They Strike.
+                </h1>
+
+
                 <p class="hero-subtitle">
-                    Paste any suspicious SMS, phishing link, WhatsApp forward, job offer, or payment QR request. 
-                    ScamShield decomposes signals using multi-layer NLP, heuristic domain inspection, and threat kill-chains.
+
+                    Paste any suspicious SMS, phishing link, WhatsApp forward,
+                    job offer, or payment QR request.
+
+                    ScamShield decomposes signals using multi-layer NLP,
+                    heuristic domain inspection, and threat kill-chains.
+
                 </p>
 
-                <!-- QUICK ATTACK VECTORS GRID -->
-                <div class="vector-deck-title">CHOOSE A SCENARIO OR VECTOR TO ANALYZE</div>
-                <div class="vector-grid">
-                    <!-- Sample 1 -->
-                    <div class="vector-card" onclick="useSample(this)">
-                        <div class="vector-top">
-                            <span class="vector-icon">🏦</span>
-                            <span class="vector-category">Banking Smishing</span>
-                        </div>
-                        <p class="vector-snippet">
-                            "Dear Customer, your bank account is suspended due to pending KYC. Click http://192.168.1.1/sbi-verify.php immediately to prevent closure."
-                        </p>
-                        <div class="vector-footer">
-                            <span>Analyze Threat</span> ➔
-                        </div>
+
+
+                <!-- LIVE STATS -->
+
+                <div class="live-stats-banner" id="liveStatsBanner">
+
+                    <div class="live-stat">
+
+                        <span class="live-stat-val text-cyan" id="heroTotalScans">
+
+                            --
+
+                        </span>
+
+                        <span class="live-stat-label">
+                            Total Scans
+                        </span>
+
                     </div>
 
-                    <!-- Sample 2 -->
-                    <div class="vector-card" onclick="useSample(this)">
-                        <div class="vector-top">
-                            <span class="vector-icon">🎁</span>
-                            <span class="vector-category">Lottery Fraud</span>
-                        </div>
-                        <p class="vector-snippet">
-                            "Congratulations! You won ₹25,00,000 in KBC Lucky Draw. Pay registration fee of ₹1,500 to release fund."
-                        </p>
-                        <div class="vector-footer">
-                            <span>Analyze Threat</span> ➔
-                        </div>
+
+                    <div class="live-stat-divider"></div>
+
+
+                    <div class="live-stat">
+
+                        <span class="live-stat-val" style="color:var(--rose);" id="heroHighThreats">
+
+                            --
+
+                        </span>
+
+                        <span class="live-stat-label">
+                            High Threats Detected
+                        </span>
+
                     </div>
 
-                    <!-- Sample 3 -->
-                    <div class="vector-card" onclick="useSample(this)">
-                        <div class="vector-top">
-                            <span class="vector-icon">💼</span>
-                            <span class="vector-category">Telegram Task Scam</span>
-                        </div>
-                        <p class="vector-snippet">
-                            "Part-time online job: Earn ₹5,000 daily by liking YouTube videos. Work from home. Contact HR on Telegram to start now."
-                        </p>
-                        <div class="vector-footer">
-                            <span>Analyze Threat</span> ➔
-                        </div>
+
+                    <div class="live-stat-divider"></div>
+
+
+                    <div class="live-stat">
+
+                        <span class="live-stat-val" style="color:var(--amber);" id="heroQuizCount">
+
+                            10
+
+                        </span>
+
+                        <span class="live-stat-label">
+                            Quiz Scenarios
+                        </span>
+
                     </div>
 
-                    <!-- Sample 4 -->
-                    <div class="vector-card" onclick="useSample(this)">
-                        <div class="vector-top">
-                            <span class="vector-icon">⚡</span>
-                            <span class="vector-category">Power Cut Extortion</span>
-                        </div>
-                        <p class="vector-snippet">
-                            "Dear user, electricity power will be disconnected at 9:30 PM due to unpaid bill. Immediately contact officer at 98214XXXXX."
-                        </p>
-                        <div class="vector-footer">
-                            <span>Analyze Threat</span> ➔
-                        </div>
+
+                    <div class="live-stat-divider"></div>
+
+
+                    <div class="live-stat">
+
+                        <span class="live-stat-val" style="color:var(--emerald);" id="heroCommunityReports">
+
+                            --
+
+                        </span>
+
+                        <span class="live-stat-label">
+                            Community Reports
+                        </span>
+
                     </div>
 
-                    <!-- Sample 5 -->
-                    <div class="vector-card vector-card-feature" onclick="triggerQuickAction('password')">
-                        <div class="vector-top">
-                            <span class="vector-icon">🔐</span>
-                            <span class="vector-category">Password Entropy Lab</span>
-                        </div>
-                        <p class="vector-snippet">
-                            Test real passwords against modern GPU brute-force clusters to view Shannon entropy bits and crack-time metrics.
-                        </p>
-                        <div class="vector-footer">
-                            <span>Launch Lab</span> ➔
-                        </div>
-                    </div>
-
-                    <!-- Sample 6 -->
-                    <div class="vector-card vector-card-feature" onclick="triggerQuickAction('quiz')">
-                        <div class="vector-top">
-                            <span class="vector-icon">🎯</span>
-                            <span class="vector-category">Spot The Scam Quiz</span>
-                        </div>
-                        <p class="vector-snippet">
-                            Challenge your threat detection reflexes against real-world disguised phishing and social engineering scenarios.
-                        </p>
-                        <div class="vector-footer">
-                            <span>Start Challenge</span> ➔
-                        </div>
-                    </div>
                 </div>
+
+
+
+                <!-- VECTOR GRID -->
+
+                <div class="vector-deck-title">
+                    CHOOSE A SCENARIO OR VECTOR TO ANALYZE
+                </div>
+
+
+                <div class="vector-grid">
+
+
+                    <!-- SAMPLE 1 -->
+
+                    <div class="vector-card" onclick="useSample(this)">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                🏦
+                            </span>
+
+                            <span class="vector-category">
+                                Banking Smishing
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            "Dear Customer, your bank account is suspended
+                            due to pending KYC. Click
+                            http://192.168.1.1/sbi-verify.php immediately
+                            to prevent closure."
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Analyze Threat
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 2 -->
+
+                    <div class="vector-card" onclick="useSample(this)">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                🎁
+                            </span>
+
+                            <span class="vector-category">
+                                Lottery Fraud
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            "Congratulations! You won ₹25,00,000 in KBC
+                            Lucky Draw. Pay registration fee of ₹1,500
+                            to release fund."
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Analyze Threat
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 3 -->
+
+                    <div class="vector-card" onclick="useSample(this)">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                💼
+                            </span>
+
+                            <span class="vector-category">
+                                Telegram Task Scam
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            "Part-time online job: Earn ₹5,000 daily by
+                            liking YouTube videos. Work from home.
+                            Contact HR on Telegram to start now."
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Analyze Threat
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 4 -->
+
+                    <div class="vector-card" onclick="useSample(this)">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                ⚡
+                            </span>
+
+                            <span class="vector-category">
+                                Power Cut Extortion
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            "Dear user, electricity power will be
+                            disconnected at 9:30 PM due to unpaid bill.
+                            Immediately contact officer at
+                            98214XXXXX."
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Analyze Threat
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 5 URL -->
+
+                    <div class="vector-card vector-card-feature" onclick="useSample(this)">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                🔗
+                            </span>
+
+                            <span class="vector-category">
+                                Suspicious URL Scan
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            http://paypal-secure-login.xyz/verify?user=123&amp;token=reset
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Scan URL
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 6 PASSWORD -->
+
+                    <div class="vector-card vector-card-feature" onclick="triggerQuickAction('password')">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                🔐
+                            </span>
+
+                            <span class="vector-category">
+                                Password Entropy Lab
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            Test real passwords against modern GPU
+                            brute-force clusters to view Shannon entropy
+                            bits and crack-time metrics.
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Launch Lab
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 7 EMAIL -->
+
+                    <div class="vector-card vector-card-feature" onclick="triggerQuickAction('email')">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                📧
+                            </span>
+
+                            <span class="vector-category">
+                                Email Header Forensics
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            Learn to decode SPF, DKIM, and Return-Path
+                            fields in email headers to expose phishing
+                            infrastructure.
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Open Lab
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 8 QUIZ -->
+
+                    <div class="vector-card vector-card-feature" onclick="triggerQuickAction('quiz')">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                🎯
+                            </span>
+
+                            <span class="vector-category">
+                                Spot The Scam Quiz
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            Challenge your threat detection reflexes across
+                            10 real-world disguised phishing, social
+                            engineering, and investment fraud scenarios.
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                Start Challenge
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SAMPLE 9 REPORT -->
+
+                    <div class="vector-card" onclick="openReportModal()" style="border-color:rgba(244,63,94,0.25);
+                                background:linear-gradient(
+                                    135deg,
+                                    var(--bg-card) 60%,
+                                    rgba(244,63,94,0.08)
+                                );">
+
+                        <div class="vector-top">
+
+                            <span class="vector-icon">
+                                📝
+                            </span>
+
+                            <span class="vector-category" style="color:var(--rose);">
+
+                                Report a Scam Incident
+
+                            </span>
+
+                        </div>
+
+
+                        <p class="vector-snippet">
+
+                            Received a scam? Log the incident to our
+                            community database. Your report helps train
+                            the AI and protects others.
+
+                        </p>
+
+
+                        <div class="vector-footer">
+
+                            <span>
+                                File Report
+                            </span>
+
+                            ➔
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
             </div>
+
         </section>
 
-        <!-- ================= INPUT & CONTROL DOCK ================= -->
+
+
+        <!-- =====================================================
+             INPUT & CONTROL DOCK
+        ====================================================== -->
+
         <footer class="dock-area">
-            <!-- QUICK PROMPT CHIPS -->
+
+
+            <!-- QUICK PROMPTS -->
+
             <div class="quick-chips-scroller">
+
                 <button class="chip-btn" onclick="injectPrompt('Check my password: CyberShield#2026!')">
-                    <span>🔐</span> Test Password
+
+                    <span>🔐</span>
+                    Test Password
+
                 </button>
+
+
+                <button class="chip-btn" onclick="injectPrompt('Scan URL http://paypal-secure-login.xyz/verify')">
+
+                    <span>🔗</span>
+                    URL Scanner
+
+                </button>
+
+
+                <button class="chip-btn" onclick="injectPrompt('How to analyze email headers for phishing?')">
+
+                    <span>📧</span>
+                    Email Headers
+
+                </button>
+
+
                 <button class="chip-btn" onclick="injectPrompt('Simulate Phishing Attack Progression with BFS')">
-                    <span>🧭</span> BFS Attack Path
+
+                    <span>🧭</span>
+                    BFS Attack Path
+
                 </button>
+
+
                 <button class="chip-btn" onclick="injectPrompt('Find lowest cost mitigation with A*')">
-                    <span>🛡️</span> A* Safety Route
+
+                    <span>🛡️</span>
+                    A* Safety Route
+
                 </button>
+
+
                 <button class="chip-btn" onclick="injectPrompt('Start a cyber defense quiz')">
-                    <span>🎯</span> Start Quiz
+
+                    <span>🎯</span>
+                    Start Quiz
+
                 </button>
+
+
                 <button class="chip-btn" onclick="injectPrompt('What are the official cybercrime helpline numbers?')">
-                    <span>🚨</span> 1930 Helpline
+
+                    <span>🚨</span>
+                    1930 Helpline
+
                 </button>
+
+
                 <button class="chip-btn" onclick="injectPrompt('Show live SQL database threat statistics')">
-                    <span>📊</span> SQL Threat DB
+
+                    <span>📊</span>
+                    SQL Threat DB
+
                 </button>
+
+
                 <button class="chip-btn" onclick="injectPrompt('How does UPI fraud work and how to prevent it?')">
-                    <span>💳</span> UPI Fraud Guide
+
+                    <span>💳</span>
+                    UPI Fraud Guide
+
                 </button>
+
+
+                <button class="chip-btn" onclick="injectPrompt('Explain Deepfake Scams and how to detect them')">
+
+                    <span>🤖</span>
+                    Deepfake Scams
+
+                </button>
+
+
+                <button class="chip-btn" onclick="openReportModal()">
+
+                    <span>📝</span>
+                    Report a Scam
+
+                </button>
+
+
+                <!-- NEW HISTORY QUICK BUTTON -->
+
+                <button class="chip-btn" onclick="loadInvestigationHistory()">
+
+                    <span>🕘</span>
+                    History
+
+                </button>
+
             </div>
 
-            <!-- INPUT BOX -->
+
+
+            <!-- INPUT -->
+
             <div class="input-cockpit">
+
                 <div class="input-prefix">
-                    <span class="cockpit-icon">🛡️</span>
+
+                    <span class="cockpit-icon">
+                        🛡️
+                    </span>
+
                 </div>
-                <textarea 
-                    id="message" 
-                    rows="1" 
-                    placeholder="Paste message, email, URL, or ask a cybersecurity question..." 
-                    onkeydown="handleKey(event)"
-                    oninput="autoExpand(this)"
-                    aria-label="Input message to analyze"
-                ></textarea>
+
+
+                <textarea id="message" rows="1"
+                    placeholder="Paste message, email, URL, or ask a cybersecurity question... (Enter to send, Shift+Enter for newline)"
+                    onkeydown="handleKey(event)" oninput="autoExpand(this)"
+                    aria-label="Input message to analyze"></textarea>
+
+
                 <button class="send-action-btn" id="sendBtn" onclick="analyzeMessage()" aria-label="Send message">
-                    <span class="send-arrow">➔</span>
+
+                    <span class="send-arrow">
+                        ➔
+                    </span>
+
                 </button>
+
             </div>
+
+
+
+            <!-- FOOTNOTE -->
 
             <div class="dock-footnote">
-                <span>ScamShield AI Defense Engine</span> • Confidential & Client-Side Sandbox. Never disclose active banking OTPs or PINs.
+
+                <span>
+                    ScamShield AI Defense Engine v5.0
+                </span>
+
+                • Confidential &amp; Client-Side Sandbox.
+                Never disclose active banking OTPs or PINs.
+
+                <span style="margin-left:12px;opacity:0.5;">
+
+                    ⌨️ Enter to send • Shift+Enter for newline
+
+                </span>
+
             </div>
+
         </footer>
+
     </main>
 
-    <!-- Main Logic Script -->
-    <script src="{{ url_for('static', filename='js/script.js') }}?v=4.0"></script>
+
+
+    <!-- =========================================================
+         INVESTIGATION HISTORY LOGIC
+    ========================================================== -->
+
+    <script>
+
+        /*
+         * =======================================================
+         * INVESTIGATION HISTORY
+         * =======================================================
+         *
+         * Uses existing backend endpoint:
+         *
+         * GET /api/history?limit=15
+         *
+         * No database changes required.
+         */
+
+        async function loadInvestigationHistory() {
+
+            const chat = document.getElementById("chat");
+
+            if (!chat) {
+                console.error("Chat container not found.");
+                return;
+            }
+
+
+            /*
+             * Show loading state
+             */
+
+            chat.innerHTML = `
+
+                <div style="
+                    max-width:1150px;
+                    margin:40px auto;
+                    padding:30px;
+                    border:1px solid rgba(34,211,238,0.18);
+                    border-radius:20px;
+                    background:rgba(15,23,42,0.82);
+                    box-shadow:0 20px 60px rgba(0,0,0,0.25);
+                ">
+
+                    <div style="
+                        display:flex;
+                        align-items:center;
+                        justify-content:space-between;
+                        gap:20px;
+                        margin-bottom:25px;
+                    ">
+
+                        <div>
+
+                            <div style="
+                                color:var(--cyan);
+                                font-family:'JetBrains Mono',monospace;
+                                font-size:11px;
+                                letter-spacing:2px;
+                                margin-bottom:8px;
+                            ">
+                                SQL THREAT DATABASE
+                            </div>
+
+                            <h2 style="
+                                margin:0;
+                                color:var(--text-primary);
+                            ">
+                                🕘 Investigation History
+                            </h2>
+
+                            <p style="
+                                color:var(--text-muted);
+                                margin:8px 0 0;
+                            ">
+                                Recent ScamShield AI investigations stored in the database.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            onclick="loadInvestigationHistory()"
+                            style="
+                                padding:10px 16px;
+                                border-radius:10px;
+                                border:1px solid rgba(34,211,238,0.25);
+                                background:rgba(34,211,238,0.08);
+                                color:var(--cyan);
+                                cursor:pointer;
+                                font-family:inherit;
+                                font-weight:600;
+                            ">
+
+                            ↻ Refresh
+
+                        </button>
+
+                    </div>
+
+
+                    <div id="historyLoading"
+                         style="
+                            text-align:center;
+                            padding:45px;
+                            color:var(--text-muted);
+                         ">
+
+                        <div style="font-size:32px;margin-bottom:10px;">
+                            🛰️
+                        </div>
+
+                        Loading investigation history...
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            try {
+
+                const response = await fetch(
+                    "/api/history?limit=15",
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `History API returned HTTP ${response.status}`
+                    );
+
+                }
+
+
+                const result = await response.json();
+
+                const history = Array.isArray(result.history)
+                    ? result.history
+                    : [];
+
+
+                const container =
+                    document.getElementById("historyLoading");
+
+
+                if (!container) {
+                    return;
+                }
+
+
+                /*
+                 * EMPTY STATE
+                 */
+
+                if (history.length === 0) {
+
+                    container.innerHTML = `
+
+                        <div style="
+                            padding:45px 20px;
+                            text-align:center;
+                            border:1px dashed rgba(148,163,184,0.22);
+                            border-radius:16px;
+                        ">
+
+                            <div style="font-size:44px;">
+                                📭
+                            </div>
+
+                            <h3 style="
+                                color:var(--text-primary);
+                                margin:12px 0 8px;
+                            ">
+                                No investigations yet
+                            </h3>
+
+                            <p style="
+                                color:var(--text-muted);
+                                margin:0;
+                            ">
+                                Analyze a suspicious message and the result
+                                will automatically appear here.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+
+                /*
+                 * RISK COLOR HELPER
+                 */
+
+                function getRiskColor(risk) {
+
+                    const value =
+                        String(risk || "")
+                            .toUpperCase();
+
+                    if (value === "HIGH") {
+                        return "var(--rose)";
+                    }
+
+                    if (value === "MEDIUM") {
+                        return "var(--amber)";
+                    }
+
+                    return "var(--emerald)";
+                }
+
+
+                /*
+                 * BUILD TABLE
+                 */
+
+                const rows = history.map(item => {
+
+                    const risk =
+                        String(item.risk || "LOW")
+                            .toUpperCase();
+
+
+                    const score =
+                        item.risk_score !== undefined &&
+                            item.risk_score !== null
+                            ? item.risk_score
+                            : "-";
+
+
+                    const confidence =
+                        item.confidence !== undefined &&
+                            item.confidence !== null
+                            ? `${item.confidence}%`
+                            : "-";
+
+
+                    return `
+
+                        <tr style="
+                            border-bottom:
+                                1px solid rgba(148,163,184,0.08);
+                        ">
+
+                            <td style="
+                                padding:14px 10px;
+                                color:var(--text-muted);
+                                white-space:nowrap;
+                                vertical-align:top;
+                            ">
+                                ${escapeHistoryText(
+                        item.created_at || "-"
+                    )}
+                            </td>
+
+
+                            <td style="
+                                padding:14px 10px;
+                                color:var(--text-primary);
+                                max-width:400px;
+                                vertical-align:top;
+                                line-height:1.5;
+                            ">
+                                ${escapeHistoryText(
+                        item.message || "-"
+                    )}
+                            </td>
+
+
+                            <td style="
+                                padding:14px 10px;
+                                color:var(--cyan);
+                                vertical-align:top;
+                                white-space:nowrap;
+                            ">
+                                ${escapeHistoryText(
+                        item.category || "-"
+                    )}
+                            </td>
+
+
+                            <td style="
+                                padding:14px 10px;
+                                font-weight:800;
+                                color:${getRiskColor(risk)};
+                                vertical-align:top;
+                            ">
+                                ${escapeHistoryText(risk)}
+                            </td>
+
+
+                            <td style="
+                                padding:14px 10px;
+                                color:var(--text-primary);
+                                vertical-align:top;
+                            ">
+                                ${escapeHistoryText(score)}
+                            </td>
+
+
+                            <td style="
+                                padding:14px 10px;
+                                color:var(--text-primary);
+                                vertical-align:top;
+                            ">
+                                ${escapeHistoryText(confidence)}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }).join("");
+
+
+                container.innerHTML = `
+
+                    <div style="
+                        overflow-x:auto;
+                        border-radius:14px;
+                    ">
+
+                        <table style="
+                            width:100%;
+                            border-collapse:collapse;
+                            font-size:13px;
+                            min-width:800px;
+                        ">
+
+                            <thead>
+
+                                <tr style="
+                                    border-bottom:
+                                        1px solid rgba(148,163,184,0.18);
+                                    text-align:left;
+                                ">
+
+                                    <th style="
+                                        padding:14px 10px;
+                                        color:var(--cyan);
+                                        font-family:'JetBrains Mono',monospace;
+                                        font-size:10px;
+                                        letter-spacing:1px;
+                                    ">
+                                        TIME
+                                    </th>
+
+
+                                    <th style="
+                                        padding:14px 10px;
+                                        color:var(--cyan);
+                                        font-family:'JetBrains Mono',monospace;
+                                        font-size:10px;
+                                        letter-spacing:1px;
+                                    ">
+                                        MESSAGE
+                                    </th>
+
+
+                                    <th style="
+                                        padding:14px 10px;
+                                        color:var(--cyan);
+                                        font-family:'JetBrains Mono',monospace;
+                                        font-size:10px;
+                                        letter-spacing:1px;
+                                    ">
+                                        CATEGORY
+                                    </th>
+
+
+                                    <th style="
+                                        padding:14px 10px;
+                                        color:var(--cyan);
+                                        font-family:'JetBrains Mono',monospace;
+                                        font-size:10px;
+                                        letter-spacing:1px;
+                                    ">
+                                        RISK
+                                    </th>
+
+
+                                    <th style="
+                                        padding:14px 10px;
+                                        color:var(--cyan);
+                                        font-family:'JetBrains Mono',monospace;
+                                        font-size:10px;
+                                        letter-spacing:1px;
+                                    ">
+                                        SCORE
+                                    </th>
+
+
+                                    <th style="
+                                        padding:14px 10px;
+                                        color:var(--cyan);
+                                        font-family:'JetBrains Mono',monospace;
+                                        font-size:10px;
+                                        letter-spacing:1px;
+                                    ">
+                                        CONFIDENCE
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${rows}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div style="
+                        margin-top:18px;
+                        padding:13px 16px;
+                        border-radius:10px;
+                        background:rgba(34,211,238,0.05);
+                        border:1px solid rgba(34,211,238,0.08);
+                        color:var(--text-muted);
+                        font-size:12px;
+                    ">
+
+                        🛡️ Showing the latest
+                        <strong style="color:var(--cyan);">
+                            ${history.length}
+                        </strong>
+                        investigation(s) stored by ScamShield AI.
+
+                    </div>
+
+                `;
+
+
+            } catch (error) {
+
+                console.error(
+                    "Investigation history error:",
+                    error
+                );
+
+
+                const container =
+                    document.getElementById("historyLoading");
+
+
+                if (container) {
+
+                    container.innerHTML = `
+
+                        <div style="
+                            padding:35px;
+                            text-align:center;
+                            border:1px solid rgba(244,63,94,0.18);
+                            border-radius:14px;
+                            background:rgba(244,63,94,0.04);
+                        ">
+
+                            <div style="font-size:40px;">
+                                ⚠️
+                            </div>
+
+                            <h3 style="
+                                color:var(--rose);
+                                margin:12px 0 8px;
+                            ">
+                                Unable to load investigation history
+                            </h3>
+
+                            <p style="
+                                color:var(--text-muted);
+                                margin:0 0 18px;
+                            ">
+                                Make sure the Flask server and database
+                                are running correctly.
+                            </p>
+
+
+                            <button
+                                onclick="loadInvestigationHistory()"
+                                style="
+                                    padding:10px 18px;
+                                    border-radius:10px;
+                                    border:1px solid rgba(244,63,94,0.3);
+                                    background:rgba(244,63,94,0.08);
+                                    color:var(--rose);
+                                    cursor:pointer;
+                                    font-family:inherit;
+                                ">
+
+                                ↻ Try Again
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }
+
+            }
+
+        }
+
+
+
+        /*
+         * =======================================================
+         * SAFE HTML ESCAPING
+         * =======================================================
+         */
+
+        function escapeHistoryText(value) {
+
+            return String(value)
+
+                .replace(/&/g, "&amp;")
+
+                .replace(/</g, "&lt;")
+
+                .replace(/>/g, "&gt;")
+
+                .replace(/"/g, "&quot;")
+
+                .replace(/'/g, "&#039;");
+
+        }
+
+    </script>
+
+
+
+    <!-- =========================================================
+         MAIN LOGIC SCRIPT
+    ========================================================== -->
+
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=5.1"></script>
+
 </body>
+
 </html>

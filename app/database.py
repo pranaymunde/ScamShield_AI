@@ -52,10 +52,27 @@ def init_db():
         );
     """)
 
-    # 3. Performance Indexes
+    # 3. Scam Reports Table (user-submitted)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scam_reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            scam_type VARCHAR(100),
+            platform VARCHAR(100),
+            amount_lost REAL DEFAULT 0.0,
+            description TEXT,
+            contact_shared INTEGER DEFAULT 0,
+            reported_to_police INTEGER DEFAULT 0,
+            reporter_email VARCHAR(200),
+            status VARCHAR(20) DEFAULT 'pending'
+        );
+    """)
+
+    # 4. Performance Indexes
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_analyses_created ON analyses(created_at DESC);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_analyses_risk ON analyses(risk);")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_analyses_category ON analyses(category);")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_reports_created ON scam_reports(created_at DESC);")
 
     conn.commit()
     conn.close()
@@ -179,6 +196,67 @@ def get_threat_stats():
         "quiz_total": quiz_total,
         "quiz_accuracy": quiz_accuracy
     }
+
+
+def save_scam_report(scam_type, platform, amount_lost, description, contact_shared, reported_to_police, reporter_email):
+    """
+    Saves a user-submitted scam report to the database.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO scam_reports (
+            scam_type, platform, amount_lost, description,
+            contact_shared, reported_to_police, reporter_email
+        ) VALUES (?, ?, ?, ?, ?, ?, ?);
+    """, (
+        str(scam_type),
+        str(platform),
+        float(amount_lost) if amount_lost else 0.0,
+        str(description),
+        1 if contact_shared else 0,
+        1 if reported_to_police else 0,
+        str(reporter_email) if reporter_email else ''
+    ))
+    report_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return report_id
+
+
+def get_category_breakdown():
+    """
+    Returns category-level breakdown for threat chart rendering.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT category, COUNT(*) as count
+        FROM analyses
+        GROUP BY category
+        ORDER BY count DESC
+        LIMIT 8;
+    """)
+    rows = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_recent_reports(limit=10):
+    """
+    Returns the most recently submitted scam reports.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, created_at, scam_type, platform, amount_lost, description, status
+        FROM scam_reports
+        ORDER BY id DESC
+        LIMIT ?;
+    """, (limit,))
+    rows = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return rows
 
 
 def sync_csv(message, category, risk, risk_score, confidence, suspicious_str):

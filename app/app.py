@@ -7,8 +7,11 @@ from app.database import (
     init_db,
     save_analysis,
     save_quiz_attempt,
+    save_scam_report,
     get_recent_analyses,
-    get_threat_stats
+    get_threat_stats,
+    get_category_breakdown,
+    get_recent_reports
 )
 
 app = Flask(__name__)
@@ -118,6 +121,48 @@ def api_history():
     limit = request.args.get("limit", 15, type=int)
     history = get_recent_analyses(limit=limit)
     return jsonify({"history": history})
+
+
+@app.route("/api/chart", methods=["GET"])
+def api_chart():
+    """Returns category breakdown data for threat chart visualization."""
+    breakdown = get_category_breakdown()
+    return jsonify({"breakdown": breakdown})
+
+
+@app.route("/api/reports", methods=["GET"])
+def api_reports():
+    """Returns recent user-submitted scam reports."""
+    limit = request.args.get("limit", 10, type=int)
+    reports = get_recent_reports(limit=limit)
+    return jsonify({"reports": reports})
+
+
+@app.route("/api/report", methods=["POST"])
+def submit_report():
+    """Accepts a user-submitted scam incident report and stores it in SQL."""
+    data = request.get_json() or {}
+
+    scam_type = data.get("scam_type", "").strip()
+    platform = data.get("platform", "").strip()
+    amount_lost = data.get("amount_lost", 0)
+    description = data.get("description", "").strip()
+    contact_shared = data.get("contact_shared", False)
+    reported_to_police = data.get("reported_to_police", False)
+    reporter_email = data.get("reporter_email", "").strip()
+
+    if not scam_type or not description:
+        return jsonify({"error": "Scam type and description are required."}), 400
+
+    report_id = save_scam_report(
+        scam_type, platform, amount_lost, description,
+        contact_shared, reported_to_police, reporter_email
+    )
+    return jsonify({
+        "success": True,
+        "report_id": report_id,
+        "message": f"Your report #{report_id} has been submitted and logged to the ScamShield database. Thank you for helping protect the community!"
+    })
 
 
 if __name__ == "__main__":
